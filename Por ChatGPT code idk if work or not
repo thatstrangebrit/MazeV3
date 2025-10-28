@@ -1,39 +1,47 @@
+function Left () {
+    // Tank-style left turn (rotate in place)
+    motor.MotorRun(motor.Motors.M1, motor.Dir.CCW, TurnSpeed)
+    motor.MotorRun(motor.Motors.M2, motor.Dir.CCW, TurnSpeed)
+    motor.MotorRun(motor.Motors.M3, motor.Dir.CW, TurnSpeed)
+    motor.MotorRun(motor.Motors.M4, motor.Dir.CW, TurnSpeed)
+    basic.pause(TurnTime)
+    Stop()
+}
+
+function Right () {
+    // Tank-style right turn (rotate in place)
+    motor.MotorRun(motor.Motors.M1, motor.Dir.CW, TurnSpeed)
+    motor.MotorRun(motor.Motors.M2, motor.Dir.CW, TurnSpeed)
+    motor.MotorRun(motor.Motors.M3, motor.Dir.CCW, TurnSpeed)
+    motor.MotorRun(motor.Motors.M4, motor.Dir.CCW, TurnSpeed)
+    basic.pause(TurnTime)
+    Stop()
+}
+
+function Forward () {
+    motor.MotorRun(motor.Motors.M1, motor.Dir.CW, Speed)
+    motor.MotorRun(motor.Motors.M2, motor.Dir.CW, Speed)
+    motor.MotorRun(motor.Motors.M3, motor.Dir.CW, Speed)
+    motor.MotorRun(motor.Motors.M4, motor.Dir.CW, Speed)
+}
+
+function Backward () {
+    motor.MotorRun(motor.Motors.M1, motor.Dir.CCW, Speed)
+    motor.MotorRun(motor.Motors.M2, motor.Dir.CCW, Speed)
+    motor.MotorRun(motor.Motors.M3, motor.Dir.CCW, Speed)
+    motor.MotorRun(motor.Motors.M4, motor.Dir.CCW, Speed)
+}
+
+function Stop () {
+    motor.motorStopAll()
+}
+
 let distanceFront = 0
 let distanceLeft = 0
 let distanceRight = 0
-let Speed = 100
-
-function Forward() {
-    motor.MotorRun(motor.Motors.M1, motor.Dir.CW, Speed)
-    motor.MotorRun(motor.Motors.M2, motor.Dir.CW, Speed)
-    motor.MotorRun(motor.Motors.M3, motor.Dir.CW, Speed)
-    motor.MotorRun(motor.Motors.M4, motor.Dir.CW, Speed)
-}
-
-function Backward() {
-    motor.MotorRun(motor.Motors.M1, motor.Dir.CCW, Speed)
-    motor.MotorRun(motor.Motors.M2, motor.Dir.CCW, Speed)
-    motor.MotorRun(motor.Motors.M3, motor.Dir.CCW, Speed)
-    motor.MotorRun(motor.Motors.M4, motor.Dir.CCW, Speed)
-}
-
-function Left() {
-    motor.MotorRun(motor.Motors.M1, motor.Dir.CCW, Speed)
-    motor.MotorRun(motor.Motors.M2, motor.Dir.CW, Speed)
-    motor.MotorRun(motor.Motors.M3, motor.Dir.CCW, Speed)
-    motor.MotorRun(motor.Motors.M4, motor.Dir.CW, Speed)
-}
-
-function Right() {
-    motor.MotorRun(motor.Motors.M1, motor.Dir.CW, Speed)
-    motor.MotorRun(motor.Motors.M2, motor.Dir.CCW, Speed)
-    motor.MotorRun(motor.Motors.M3, motor.Dir.CW, Speed)
-    motor.MotorRun(motor.Motors.M4, motor.Dir.CCW, Speed)
-}
-
-function Stop() {
-    motor.MotorStopAll()
-}
+let Speed = 80          // Normal movement speed
+let TurnSpeed = 255     // Full power for fast tank turns
+let TurnTime = 450      // Adjust this for roughly 90° turn (in ms)
 
 basic.forever(function () {
     distanceFront = sonar.ping(DigitalPin.P0, DigitalPin.P1, PingUnit.Centimeters)
@@ -41,21 +49,14 @@ basic.forever(function () {
     distanceRight = sonar.ping(DigitalPin.P12, DigitalPin.P13, PingUnit.Centimeters)
 
     if (distanceFront <= 20 && distanceLeft <= 20 && distanceRight > 20) {
-        Left()
-        basic.pause(500)
-        Stop()
-    } 
-    else if (distanceFront <= 20 && distanceRight <= 20 && distanceLeft > 20) {
         Right()
-        basic.pause(500)
-        Stop()
-    } 
-    else if (distanceLeft <= 20 && distanceRight <= 20 && distanceFront > 20) {
+    } else if (distanceFront <= 20 && distanceRight <= 20 && distanceLeft > 20) {
+        Left()
+    } else if (distanceLeft <= 20 && distanceRight <= 20 && distanceFront > 20) {
         Forward()
         basic.pause(500)
         Stop()
-    } 
-    else {
+    } else {
         Forward()
     }
 })
